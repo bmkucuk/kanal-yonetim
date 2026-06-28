@@ -90,6 +90,23 @@ def admin_required(f):
 # Muhasebe blueprint
 app.register_blueprint(muh)
 
+# ── Template context processor ───────────────────────────────────────────────
+@app.context_processor
+def inject_lisans():
+    def _lisans():
+        import config_loader as cfg2
+        c = cfg2.load_config()
+        return {
+            'durum'   : cfg2.lisans_durumu(),
+            'kalan'   : cfg2.demo_kalan_gun(),
+            'otel'    : c.get('otel', {}),
+            'ortaklar': c.get('ortaklar', [])
+        }
+    return {
+        'lisans_bilgi': _lisans,
+        'tema_mod': 'dark'
+    }
+
 # DB başlat
 db.init_db()
 mdb.init_db()
